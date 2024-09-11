@@ -1,16 +1,9 @@
-
 name: Deploy Application Docker Image to EC2 instance
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
+    branches: [main]
 
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   Continuous-Integration:
@@ -41,12 +34,6 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .  
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Debug AWS Secrets
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}"
 
   Continuous-Deployment:
     needs: Continuous-Integration
